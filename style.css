@@ -1,0 +1,271 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #f8f5dc;
+  font-family: "Arial", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background:
+    linear-gradient(90deg, rgba(255, 62, 62, 0.18) 0 2px, transparent 2px 24px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 24px),
+    #17171c;
+}
+
+button {
+  cursor: pointer;
+  border: 3px solid #f8f5dc;
+  color: #17171c;
+  background: #ffd447;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px 18px;
+  box-shadow: 4px 4px 0 #111;
+}
+
+button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #111;
+}
+
+.game-shell {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.screen {
+  display: none;
+  min-height: calc(100vh - 32px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.screen.active {
+  display: flex;
+}
+
+h1,
+h2 {
+  margin: 0;
+  color: #ff554a;
+  text-shadow: 4px 4px 0 #000, 0 0 14px rgba(255, 212, 71, 0.4);
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(2.1rem, 8vw, 5rem);
+}
+
+h2 {
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
+}
+
+p {
+  max-width: 680px;
+  line-height: 1.8;
+}
+
+.primary-button {
+  background: #52e38d;
+}
+
+.sub-button {
+  background: #a7d8ff;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 4px solid #f8f5dc;
+  background: #24242b;
+  box-shadow: 6px 6px 0 #000;
+}
+
+table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 2px solid #55535e;
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #17171c;
+  background: #ffd447;
+}
+
+td button {
+  width: 100%;
+}
+
+.stage-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.stage-card {
+  min-height: 180px;
+  border: 4px solid #f8f5dc;
+  padding: 14px;
+  text-align: left;
+  background: #24242b;
+  box-shadow: 5px 5px 0 #000;
+}
+
+.stage-card h3 {
+  margin: 0 0 8px;
+  color: #ffd447;
+}
+
+.stage-card p {
+  margin: 0 0 12px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.stage-card button {
+  width: 100%;
+}
+
+.game-screen {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.hud {
+  width: min(100%, 720px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.hud-card {
+  min-height: 64px;
+  border: 3px solid #f8f5dc;
+  padding: 8px;
+  background: #24242b;
+  text-align: left;
+}
+
+.hud-card span {
+  display: block;
+  color: #9fe8ff;
+  font-size: 0.78rem;
+}
+
+.hud-card strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.2rem;
+}
+
+.bar {
+  width: 100%;
+  height: 12px;
+  margin-top: 6px;
+  border: 2px solid #f8f5dc;
+  background: #111;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0%;
+}
+
+.fuel {
+  background: #52e38d;
+}
+
+.speed {
+  background: #ff554a;
+}
+
+#gameCanvas {
+  width: min(100%, 480px);
+  max-height: 66vh;
+  aspect-ratio: 2 / 3;
+  border: 5px solid #f8f5dc;
+  background: #303038;
+  image-rendering: pixelated;
+  box-shadow: 7px 7px 0 #000;
+}
+
+.touch-controls {
+  width: min(100%, 560px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  user-select: none;
+  touch-action: none;
+}
+
+.move-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.move-pad button[data-key="up"] {
+  grid-column: 2;
+}
+
+.move-pad button[data-key="left"] {
+  grid-column: 1;
+}
+
+.move-pad button[data-key="right"] {
+  grid-column: 3;
+}
+
+.move-pad button[data-key="down"] {
+  grid-column: 2;
+}
+
+.pedals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pedals button {
+  min-height: 86px;
+}
+
+.final-score {
+  font-size: 1.4rem;
+}
+
+@media (max-width: 720px) {
+  .game-shell {
+    padding: 8px;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hud-card.wide {
+    grid-column: span 2;
+  }
+
+  #gameCanvas {
+    max-height: 54vh;
+  }
+
+  .touch-controls {
+    grid-template-columns: 1fr;
+  }
+}
