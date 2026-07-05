@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>広島ドライブチャレンジ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section id="titleScreen" class="screen active">
+      <h1>広島ドライブチャレンジ</h1>
+      <p>アクセルとブレーキを使い分け、広島の道を安全に走り抜けよう。</p>
+      <button id="startButton" class="primary-button">ゲームスタート</button>
+    </section>
+
+    <section id="carScreen" class="screen">
+      <h2>車種選択</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>車種</th>
+              <th>特徴</th>
+              <th>最高速度</th>
+              <th>燃料</th>
+              <th>選択</th>
+            </tr>
+          </thead>
+          <tbody id="carTableBody"></tbody>
+        </table>
+      </div>
+      <button class="sub-button" data-screen="titleScreen">タイトルへ戻る</button>
+    </section>
+
+    <section id="stageScreen" class="screen">
+      <h2>ステージ選択</h2>
+      <div id="stageList" class="stage-grid"></div>
+      <button class="sub-button" data-screen="carScreen">車種選択へ戻る</button>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen">
+      <div class="hud">
+        <div class="hud-card">
+          <span>スコア</span>
+          <strong id="scoreText">0</strong>
+        </div>
+        <div class="hud-card">
+          <span>レベル</span>
+          <strong id="levelText">1</strong>
+        </div>
+        <div class="hud-card wide">
+          <span>燃料</span>
+          <div class="bar"><div id="fuelBar" class="bar-fill fuel"></div></div>
+        </div>
+        <div class="hud-card wide">
+          <span>速度</span>
+          <strong id="speedText">0 km/h</strong>
+          <div class="bar"><div id="speedBar" class="bar-fill speed"></div></div>
+        </div>
+        <div class="hud-card">
+          <span>シールド</span>
+          <strong id="shieldText">なし</strong>
+        </div>
+      </div>
+
+      <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+      <div id="touchControls" class="touch-controls" aria-label="スマホ操作">
+        <div class="move-pad">
+          <button data-key="left">左</button>
+          <button data-key="up">上</button>
+          <button data-key="right">右</button>
+          <button data-key="down">下</button>
+        </div>
+        <div class="pedals">
+          <button data-key="accelerate">アクセル</button>
+          <button data-key="brake">ブレーキ</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameOverScreen" class="screen">
+      <h2 id="gameOverTitle">ゲームオーバー</h2>
+      <p id="gameOverMessage">安全運転で再挑戦しよう。</p>
+      <p class="final-score">最終スコア: <strong id="finalScoreText">0</strong></p>
+      <button id="retryButton" class="primary-button">もう一度プレイ</button>
+      <button id="backToCarButton" class="sub-button">車種選択に戻る</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
