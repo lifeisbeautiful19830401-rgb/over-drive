@@ -6,6 +6,292 @@
   <meta name="theme-color" content="#17171c">
   <title>OVER/DRIVE - 広島ドライブチャレンジ</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* 車種選択：スマホでは横長の表をコンパクトなカードへ変換 */
+    @media (max-width: 700px) {
+      #carScreen.active {
+        min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom));
+        justify-content: flex-start;
+        gap: 9px;
+        padding-top: 8px;
+      }
+
+      #carScreen h2 {
+        font-size: clamp(1.7rem, 9vw, 2.35rem);
+      }
+
+      #carScreen .table-wrap {
+        width: min(100%, 480px);
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      #carScreen table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+
+      #carScreen thead {
+        display: none;
+      }
+
+      #carScreen tbody {
+        display: grid;
+        gap: 8px;
+      }
+
+      #carScreen tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        grid-template-areas:
+          "name speed fuel"
+          "description description select";
+        gap: 5px 8px;
+        align-items: center;
+        min-height: 93px;
+        padding: 9px;
+        border: 3px solid #f8f5dc;
+        border-radius: 12px;
+        background: rgba(36, 36, 43, 0.96);
+        box-shadow: 4px 4px 0 #000;
+      }
+
+      #carScreen td {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        text-align: left;
+        line-height: 1.25;
+      }
+
+      #carScreen td:nth-child(1) {
+        grid-area: name;
+        color: #ffd447;
+        font-size: 1.08rem;
+      }
+
+      #carScreen td:nth-child(2) {
+        grid-area: description;
+        display: -webkit-box;
+        overflow: hidden;
+        color: #e5e4e9;
+        font-size: 0.73rem;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      #carScreen td:nth-child(3) {
+        grid-area: speed;
+      }
+
+      #carScreen td:nth-child(4) {
+        grid-area: fuel;
+      }
+
+      #carScreen td:nth-child(3),
+      #carScreen td:nth-child(4) {
+        padding: 5px 7px;
+        border-radius: 7px;
+        color: #17171c;
+        background: #9fe8ff;
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      #carScreen td:nth-child(3)::before {
+        content: "最高 ";
+      }
+
+      #carScreen td:nth-child(4)::before {
+        content: "燃料 ";
+      }
+
+      #carScreen td:nth-child(5) {
+        grid-area: select;
+      }
+
+      #carScreen td:nth-child(5) button {
+        width: auto;
+        min-width: 105px;
+        padding: 9px 8px;
+        border-width: 2px;
+        border-radius: 9px;
+        font-size: 0.75rem;
+        box-shadow: 3px 3px 0 #000;
+      }
+
+      #carScreen > .sub-button {
+        padding: 9px 14px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* スマホ操作：左は十字キー、右はペダルとショット */
+    @media (hover: none), (pointer: coarse) {
+      .touch-controls {
+        grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+        align-items: stretch;
+        gap: 8px;
+        padding: 6px 7px max(6px, var(--safe-bottom));
+      }
+
+      .control-hint {
+        display: none;
+      }
+
+      .cluster-label {
+        margin-bottom: 4px;
+        font-size: 0.68rem;
+        text-align: center;
+      }
+
+      .move-pad {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(48px, 1fr));
+        gap: 4px;
+        height: 100%;
+        min-height: 158px;
+      }
+
+      .move-pad button[data-key="up"] {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .move-pad button[data-key="left"] {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .move-pad button[data-key="right"] {
+        grid-column: 3;
+        grid-row: 2;
+      }
+
+      .move-pad button[data-key="down"] {
+        grid-column: 2;
+        grid-row: 3;
+      }
+
+      .move-pad button {
+        min-height: 48px;
+        padding: 2px;
+        border-radius: 15px;
+        background: linear-gradient(180deg, #dff7ff, #78bdda);
+      }
+
+      .move-pad button .button-icon {
+        margin: 0;
+        font-size: clamp(1.55rem, 7vw, 2.1rem);
+      }
+
+      .move-pad button .button-label {
+        display: none;
+      }
+
+      .pedals {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        grid-template-rows: 1fr 1fr;
+        gap: 6px;
+        min-height: 158px;
+      }
+
+      .pedals .shot-button {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .pedals .brake-button {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .pedals .accelerate-button {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        min-height: 158px;
+      }
+
+      .pedals button {
+        min-height: 0;
+        padding: 5px 3px;
+        border-radius: 16px;
+        font-size: clamp(0.68rem, 3.2vw, 0.9rem);
+      }
+
+      .pedals button .button-icon {
+        margin-bottom: 5px;
+        font-size: clamp(1.4rem, 7vw, 2rem);
+      }
+
+      .accelerate-button .button-icon {
+        font-size: clamp(2rem, 10vw, 3rem) !important;
+      }
+
+      .accelerate-button {
+        border-color: #d9ffe7 !important;
+        box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.16), 3px 3px 0 #08080a !important;
+      }
+
+      .brake-button {
+        border-color: #fff0b5 !important;
+      }
+
+      .shot-button {
+        border-color: #ffd5d1 !important;
+      }
+
+      #gameCanvas {
+        max-height: calc(100dvh - 326px - var(--safe-top) - var(--safe-bottom));
+      }
+    }
+
+    @media (hover: none) and (max-width: 390px), (pointer: coarse) and (max-width: 390px) {
+      .move-pad,
+      .pedals {
+        min-height: 145px;
+      }
+
+      .move-pad {
+        grid-template-rows: repeat(3, minmax(44px, 1fr));
+      }
+
+      .pedals .accelerate-button {
+        min-height: 145px;
+      }
+
+      #gameCanvas {
+        max-height: calc(100dvh - 306px - var(--safe-top) - var(--safe-bottom));
+      }
+    }
+
+    @media (hover: none) and (max-height: 700px), (pointer: coarse) and (max-height: 700px) {
+      .cluster-label {
+        display: none;
+      }
+
+      .move-pad,
+      .pedals,
+      .pedals .accelerate-button {
+        min-height: 126px;
+      }
+
+      .move-pad {
+        grid-template-rows: repeat(3, minmax(38px, 1fr));
+      }
+
+      #gameCanvas {
+        max-height: calc(100dvh - 250px - var(--safe-top) - var(--safe-bottom));
+      }
+    }
+  </style>
 </head>
 <body>
   <main class="game-shell">
@@ -79,21 +365,21 @@
         <p class="control-hint">ボタンは押している間だけ動作します</p>
 
         <div class="control-cluster steering-cluster">
-          <span class="cluster-label">方向</span>
+          <span class="cluster-label">ハンドル操作</span>
           <div class="move-pad">
-            <button type="button" data-key="left" aria-label="左へ移動"><span class="button-icon">◀</span><span>左</span></button>
-            <button type="button" data-key="up" aria-label="前へ移動"><span class="button-icon">▲</span><span>前</span></button>
-            <button type="button" data-key="down" aria-label="後ろへ移動"><span class="button-icon">▼</span><span>後</span></button>
-            <button type="button" data-key="right" aria-label="右へ移動"><span class="button-icon">▶</span><span>右</span></button>
+            <button type="button" data-key="left" aria-label="左へ移動"><span class="button-icon">◀</span><span class="button-label">左</span></button>
+            <button type="button" data-key="up" aria-label="前へ移動"><span class="button-icon">▲</span><span class="button-label">前</span></button>
+            <button type="button" data-key="down" aria-label="後ろへ移動"><span class="button-icon">▼</span><span class="button-label">後</span></button>
+            <button type="button" data-key="right" aria-label="右へ移動"><span class="button-icon">▶</span><span class="button-label">右</span></button>
           </div>
         </div>
 
         <div class="control-cluster action-cluster">
-          <span class="cluster-label">速度・攻撃</span>
+          <span class="cluster-label">ペダル・攻撃</span>
           <div class="pedals">
-            <button type="button" data-key="brake" class="brake-button" aria-label="ブレーキ"><span class="button-icon">■</span><span>BRAKE</span></button>
-            <button type="button" data-action="shoot" class="shot-button" aria-label="ショット"><span class="button-icon">●</span><span>SHOT</span></button>
-            <button type="button" data-key="accelerate" class="accelerate-button" aria-label="アクセル"><span class="button-icon">▲</span><span>ACCEL</span></button>
+            <button type="button" data-key="brake" class="brake-button" aria-label="ブレーキ"><span class="button-icon">■</span><span>ブレーキ</span></button>
+            <button type="button" data-action="shoot" class="shot-button" aria-label="ショット"><span class="button-icon">◎</span><span>ショット</span></button>
+            <button type="button" data-key="accelerate" class="accelerate-button" aria-label="アクセル"><span class="button-icon">▲</span><span>アクセル</span></button>
           </div>
         </div>
       </div>
