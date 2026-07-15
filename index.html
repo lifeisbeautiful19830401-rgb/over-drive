@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#17171c">
   <title>OVER/DRIVE - 広島ドライブチャレンジ</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -13,6 +14,7 @@
       <h1>OVER<span>/</span>DRIVE</h1>
       <p class="subtitle">広島ドライブチャレンジ</p>
       <p>アクセルとブレーキを使い分け、広島の道を安全に走り抜けよう。ショットゲージを溜めると障害物をクリアできます。</p>
+      <p class="mobile-note">スマホでは画面下の大型ボタンを両手で操作できます。</p>
       <button id="startButton" class="primary-button">ゲームスタート</button>
     </section>
 
@@ -42,7 +44,7 @@
     </section>
 
     <section id="gameScreen" class="screen game-screen">
-      <div class="hud">
+      <div class="hud" aria-label="ゲーム情報">
         <div class="hud-card">
           <span>スコア</span>
           <strong id="scoreText">0</strong>
@@ -71,19 +73,28 @@
         </div>
       </div>
 
-      <canvas id="gameCanvas" width="480" height="900"></canvas>
+      <canvas id="gameCanvas" width="480" height="900" aria-label="OVER DRIVE ゲーム画面"></canvas>
 
       <div id="touchControls" class="touch-controls" aria-label="スマホ操作">
-        <div class="move-pad">
-          <button data-key="left">左</button>
-          <button data-key="up">上</button>
-          <button data-key="right">右</button>
-          <button data-key="down">下</button>
+        <p class="control-hint">ボタンは押している間だけ動作します</p>
+
+        <div class="control-cluster steering-cluster">
+          <span class="cluster-label">方向</span>
+          <div class="move-pad">
+            <button type="button" data-key="left" aria-label="左へ移動"><span class="button-icon">◀</span><span>左</span></button>
+            <button type="button" data-key="up" aria-label="前へ移動"><span class="button-icon">▲</span><span>前</span></button>
+            <button type="button" data-key="down" aria-label="後ろへ移動"><span class="button-icon">▼</span><span>後</span></button>
+            <button type="button" data-key="right" aria-label="右へ移動"><span class="button-icon">▶</span><span>右</span></button>
+          </div>
         </div>
-        <div class="pedals">
-          <button data-key="accelerate">アクセル</button>
-          <button data-key="brake">ブレーキ</button>
-          <button data-action="shoot" class="shot-button">ショット</button>
+
+        <div class="control-cluster action-cluster">
+          <span class="cluster-label">速度・攻撃</span>
+          <div class="pedals">
+            <button type="button" data-key="brake" class="brake-button" aria-label="ブレーキ"><span class="button-icon">■</span><span>BRAKE</span></button>
+            <button type="button" data-action="shoot" class="shot-button" aria-label="ショット"><span class="button-icon">●</span><span>SHOT</span></button>
+            <button type="button" data-key="accelerate" class="accelerate-button" aria-label="アクセル"><span class="button-icon">▲</span><span>ACCEL</span></button>
+          </div>
         </div>
       </div>
     </section>
@@ -98,5 +109,26 @@
   </main>
 
   <script src="script.js"></script>
+  <script>
+    (() => {
+      const controls = document.getElementById("touchControls");
+      if (!controls) return;
+
+      controls.addEventListener("contextmenu", (event) => event.preventDefault());
+      controls.addEventListener("pointerdown", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+        button.classList.add("is-pressed");
+        if (navigator.vibrate) navigator.vibrate(8);
+      });
+
+      ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
+        controls.addEventListener(eventName, (event) => {
+          const button = event.target.closest("button");
+          if (button) button.classList.remove("is-pressed");
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
