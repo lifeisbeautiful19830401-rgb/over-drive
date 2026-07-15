@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>広島ドライブチャレンジ</title>
+  <title>OVER/DRIVE - 広島ドライブチャレンジ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="game-shell">
-    <section id="titleScreen" class="screen active">
-      <h1>広島ドライブチャレンジ</h1>
-      <p>アクセルとブレーキを使い分け、広島の道を安全に走り抜けよう。</p>
+    <section id="titleScreen" class="screen active title-screen">
+      <p class="eyebrow">HIROSHIMA ARCADE DRIVE</p>
+      <h1>OVER<span>/</span>DRIVE</h1>
+      <p class="subtitle">広島ドライブチャレンジ</p>
+      <p>アクセルとブレーキを使い分け、広島の道を安全に走り抜けよう。ショットゲージを溜めると障害物をクリアできます。</p>
       <button id="startButton" class="primary-button">ゲームスタート</button>
     </section>
 
@@ -58,13 +60,18 @@
           <strong id="speedText">0 km/h</strong>
           <div class="bar"><div id="speedBar" class="bar-fill speed"></div></div>
         </div>
+        <div class="hud-card wide">
+          <span>SHOT</span>
+          <strong id="shotText">0%</strong>
+          <div class="bar"><div id="shotBar" class="bar-fill shot"></div></div>
+        </div>
         <div class="hud-card">
           <span>シールド</span>
           <strong id="shieldText">なし</strong>
         </div>
       </div>
 
-      <canvas id="gameCanvas" width="480" height="720"></canvas>
+      <canvas id="gameCanvas" width="480" height="900"></canvas>
 
       <div id="touchControls" class="touch-controls" aria-label="スマホ操作">
         <div class="move-pad">
@@ -76,6 +83,7 @@
         <div class="pedals">
           <button data-key="accelerate">アクセル</button>
           <button data-key="brake">ブレーキ</button>
+          <button data-action="shoot" class="shot-button">ショット</button>
         </div>
       </div>
     </section>
