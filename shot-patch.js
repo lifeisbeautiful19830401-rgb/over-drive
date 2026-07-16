@@ -98,3 +98,106 @@ bulletHits = function () {
   }
   bullets = remainingBullets;
 };
+
+// PCプレイ時にもショットボタンを表示します。
+(() => {
+  const gameScreen = document.getElementById("gameScreen");
+  if (!gameScreen || document.getElementById("desktopShotControls")) return;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .desktop-shot-controls {
+      display: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .desktop-shot-controls {
+        display: flex;
+        width: min(100%, 480px);
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 8px 12px;
+        border: 3px solid #f8f5dc;
+        border-radius: 12px;
+        background: rgba(36, 36, 43, 0.96);
+        box-shadow: 5px 5px 0 #000;
+      }
+
+      .desktop-shot-button {
+        min-width: 210px;
+        min-height: 62px;
+        padding: 10px 22px;
+        border-color: #ffd5d1;
+        border-radius: 14px;
+        color: #fff;
+        background: linear-gradient(180deg, #ff796f, #d62e25);
+        font-size: 1.05rem;
+        letter-spacing: 0.05em;
+      }
+
+      .desktop-shot-button[disabled] {
+        cursor: not-allowed;
+        opacity: 0.48;
+        filter: grayscale(0.45);
+      }
+
+      .desktop-shot-button.is-ready {
+        animation: desktopShotPulse 0.8s ease-in-out infinite alternate;
+        box-shadow: 0 0 18px rgba(159, 232, 255, 0.9), 4px 4px 0 #000;
+      }
+
+      .desktop-shot-help {
+        margin: 0;
+        color: #c9c8d0;
+        font-size: 0.84rem;
+        line-height: 1.35;
+        text-align: left;
+      }
+
+      .desktop-shot-help strong {
+        display: block;
+        color: #9fe8ff;
+        font-size: 0.92rem;
+      }
+
+      @keyframes desktopShotPulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.035); }
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const controls = document.createElement("div");
+  controls.id = "desktopShotControls";
+  controls.className = "desktop-shot-controls";
+  controls.innerHTML = `
+    <button id="desktopShotButton" type="button" class="desktop-shot-button" disabled>
+      ◎ ショット発射
+    </button>
+    <p class="desktop-shot-help">
+      <strong id="desktopShotStatus">ゲージを溜めています</strong>
+      Spaceキーでも発射できます
+    </p>
+  `;
+
+  const touchControls = document.getElementById("touchControls");
+  gameScreen.insertBefore(controls, touchControls || null);
+
+  const button = document.getElementById("desktopShotButton");
+  const status = document.getElementById("desktopShotStatus");
+
+  button.addEventListener("click", () => shoot());
+
+  const odBaseHud = hud;
+  hud = function () {
+    odBaseHud();
+    const ready = running && screen === "game" && shot >= 100;
+    button.disabled = !ready;
+    button.classList.toggle("is-ready", ready);
+    status.textContent = ready ? "SHOT OK — 発射可能" : `ショットゲージ ${Math.floor(shot)}%`;
+  };
+
+  hud();
+})();
