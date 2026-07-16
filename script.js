@@ -1,1 +1,1 @@
-document.write('<script src="script-core.js"><\/script><script src="shot-patch.js"><\/script>');
+document.write('<script src="script-core.js"><\/script><script src="shot-patch.js"><\/script><script src="skill-patch.js"><\/script>');
